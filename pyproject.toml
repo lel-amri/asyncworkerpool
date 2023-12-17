@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools >=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "asyncworkerpool"
+version = "0.1.0"
+requires-python = ">=3.7,<3.13"
+authors = [
+    {name = "Léo El Amri", email = "leo@superlel.me"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "typing-extensions",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
