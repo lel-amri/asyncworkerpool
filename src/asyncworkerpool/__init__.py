@@ -93,9 +93,15 @@ class AsyncWorkerPool(Generic[_CoroReturn], object):
                 if stop_event_wait_task is not None:
                     stop_event_wait_task.cancel()
                 if queue_get_task is not None:
-                    await queue_get_task
+                    try:
+                        await queue_get_task
+                    except asyncio.CancelledError:
+                        pass
                 if stop_event_wait_task is not None:
-                    await stop_event_wait_task
+                    try:
+                        await stop_event_wait_task
+                    except asyncio.CancelledError:
+                        pass
                 raise
             # For each completed task
             for task_done in done_set:
@@ -149,10 +155,16 @@ class AsyncWorkerPool(Generic[_CoroReturn], object):
                 assert len(self._pending_coroutines) == 0, "The AsyncPool pending tasks set should be empty"
                 self._pending_coroutines.update(((task_to_coroutine[e], e) for e in user_tasks_set))
                 if queue_get_task is not None:
-                    await queue_get_task
+                    try:
+                        await queue_get_task
+                    except asyncio.CancelledError:
+                        pass
                     queue_get_task = None
                 if stop_event_wait_task is not None:
-                    await stop_event_wait_task
+                    try:
+                        await stop_event_wait_task
+                    except asyncio.CancelledError:
+                        pass
                     stop_event_wait_task = None
                 raise
             assert len(user_tasks_set) == 0, "The pending tasks set should be empty"
@@ -174,10 +186,16 @@ class AsyncWorkerPool(Generic[_CoroReturn], object):
                 except:
                     pass
         if queue_get_task is not None:
-            await queue_get_task
+            try:
+                await queue_get_task
+            except asyncio.CancelledError:
+                pass
             queue_get_task = None
         if stop_event_wait_task is not None:
-            await stop_event_wait_task
+            try:
+                await stop_event_wait_task
+            except asyncio.CancelledError:
+                pass
             stop_event_wait_task = None
         assert len(self._pending_coroutines) == 0, "The AsyncPool pending tasks set should be empty"
 
